@@ -53,6 +53,7 @@ class DefineArea:
 
         r = FindRoot(coord)  # Решение задачи комивояжера
         self.new_route = r.get_root()
+        print(self.new_route)
 
         obj = CalcRoot(self.ka, coord, self.new_route)
         obj.view_points()
@@ -127,7 +128,7 @@ def main(args_list: list):
     da = DefineArea(ka, base, ul, br)  # Определить область съемки
 
     root.mainloop()
-    return da.get_route()
+    return da.get_route()  # tsp route
 
 
 if __name__ == '__main__':
