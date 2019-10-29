@@ -1,3 +1,4 @@
+import sys
 from tkinter import *
 
 import const
@@ -151,4 +152,17 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+
+    if len(sys.argv) == 7:
+        try:
+            ll = list(map(int, sys.argv[1:]))
+            if all(item >= 0 for item in ll) and (ll[2] < ll[4]) and (ll[3] < ll[5]):
+                main()
+            else:
+                print("Problem: check if >= 0 and UpperLeft < BottomRight", ll)
+        except:
+            print('Problem: incorrect integers', sys.argv[1:])
+            sys.exit(1)
+    else:
+        print("Problem: number of input parameters must be 6: Base(x,y), UL(x,y), BR(x,y)", sys.argv[1:])
+        sys.exit(1)
