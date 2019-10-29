@@ -14,15 +14,11 @@ class Drone:
         self.delta_e_flying = 1  # Расход энергии на единицу пройденного расстояния
         self.delta_e_shooting = 4  # Расход энергии на рдин снимок
 
-    # l - кортеж, координаты начальной точки (x1, y1) и конечной точки (x2, y2)
-    # l = (x1, y1, x2, y2)
     # Возвращает расстояние между точками
     @staticmethod
     def distance(l: tuple) -> float:
         return (abs(l[2] - l[0]) ** 2 + abs(l[3] - l[1]) ** 2) ** 0.5
 
-    # Максимальное расстояние полета (туда и обратно) + один снимок
-    # Зависит от начальной энергии и расхода на единицу полета и снимок
     # Возвращает радиус круга
     def max_radius(self) -> float:
         max_distance = (self.full_charge - self.delta_e_shooting) / self.delta_e_flying
@@ -33,29 +29,20 @@ class Drone:
 
     def set_full_charge(self, new_value):
         self.full_charge -= new_value
-        print("Остаток энергии: {:5.2f}".format(self.get_full_charge()))
         return
 
 
 class DefineArea:
     """ Определение прямоугольника, в котором надо произвести съемку """
 
-    def __init__(self, key_adapter):
+    def __init__(self, key_adapter, base, ul, br):
         self.ka = key_adapter
-        self.top_left = ()
-        self.bottom_right = ()
-        self.ka.add_button1(self.set_area)
+        self.base = base
+        self.top_left = ul
+        self.bottom_right = br
+        self.set_area()
 
-    def set_area(self, event):
-        point = (int(event.x), int(event.y))
-        if not self.top_left:
-            self.top_left = point
-            self.ka.canvas.create_oval(point[0] - 2, point[1] + 2, point[0] + 2, point[1] - 2,
-                                       fill="blue")
-        elif point[0] > self.top_left[0] and point[1] > self.top_left[1]:
-            self.bottom_right = point
-
-            self.ka.del_button1()
+    def set_area(self):
             self.ka.canvas.create_rectangle(self.top_left[0], self.top_left[1],
                                             self.bottom_right[0], self.bottom_right[1], dash=(4, 2))
 
@@ -63,7 +50,7 @@ class DefineArea:
             area = DefCoord((self.top_left[0], self.top_left[1],
                              self.bottom_right[0], self.bottom_right[1]))
             coord = area.get_area()
-            coord.append(const.BASE)
+            coord.insert(0, self.base)
 
             r = FindRoot(coord)  # Решение задачи комивояжера
             new_root = r.get_root()
@@ -123,30 +110,24 @@ class KeyAdapter:
         self.canvas = canvas
         self.canvas.bind('<Button-2>', self.exit_app)
 
-    def add_button1(self, func):
-        self.canvas.bind('<Button-1>', func)
-
-    def del_button1(self):
-        self.canvas.unbind('<Button-1>')
-
     # Выход из программы - правая кнопка мыши
     @staticmethod
-    def exit_app(self):
+    def exit_app():
         sys.exit()
 
 
-def main():
+def main(ll: list):
+    base, ul, br = (ll[0], ll[1]), (ll[2], ll[3]), (ll[4], ll[5])
+    print("BASE={}, UL={}, BR={}".format(base, ul, br))
     root = Tk()
     root.title("Area Shooting")
 
     can = Canvas(root, width=1400, height=820, bg="lightgreen")
     can.pack(fill='both', expand=True)
 
-    ka = KeyAdapter(root, can)
+    ka = KeyAdapter(root, can)  # Определить выход из программы по правой клавише мышки
     my_drone = Drone()
-
-    # Определить область съемки
-    da = DefineArea(ka)
+    da = DefineArea(ka, base, ul, br)  # Определить область съемки
 
     root.mainloop()
 
@@ -157,7 +138,7 @@ if __name__ == '__main__':
         try:
             ll = list(map(int, sys.argv[1:]))
             if all(item >= 0 for item in ll) and (ll[2] < ll[4]) and (ll[3] < ll[5]):
-                main()
+                main(ll)
             else:
                 print("Problem: check if >= 0 and UpperLeft < BottomRight", ll)
         except:
