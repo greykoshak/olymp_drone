@@ -50,10 +50,11 @@ class DefineArea:
                          self.bottom_right[0], self.bottom_right[1]))
         coord = area.get_area()
         coord.insert(0, self.base)
+        print("Area: ", coord)
 
         r = FindRoot(coord)  # Решение задачи комивояжера
         self.new_route = r.get_root()
-        print(self.new_route)
+        print("Route: ", self.new_route)
 
         obj = CalcRoot(self.ka, coord, self.new_route)
         obj.view_points()
