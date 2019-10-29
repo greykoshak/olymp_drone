@@ -1,7 +1,5 @@
-import sys
 from tkinter import *
 
-import const
 from area import DefCoord
 from tsp import FindRoot
 
@@ -40,24 +38,28 @@ class DefineArea:
         self.base = base
         self.top_left = ul
         self.bottom_right = br
+        self.new_route = None
         self.set_area()
 
     def set_area(self):
-            self.ka.canvas.create_rectangle(self.top_left[0], self.top_left[1],
-                                            self.bottom_right[0], self.bottom_right[1], dash=(4, 2))
+        self.ka.canvas.create_rectangle(self.top_left[0], self.top_left[1],
+                                        self.bottom_right[0], self.bottom_right[1], dash=(4, 2))
 
-            # Получить массив координат для съемки
-            area = DefCoord((self.top_left[0], self.top_left[1],
-                             self.bottom_right[0], self.bottom_right[1]))
-            coord = area.get_area()
-            coord.insert(0, self.base)
+        # Получить массив координат для съемки
+        area = DefCoord((self.top_left[0], self.top_left[1],
+                         self.bottom_right[0], self.bottom_right[1]))
+        coord = area.get_area()
+        coord.insert(0, self.base)
 
-            r = FindRoot(coord)  # Решение задачи комивояжера
-            new_root = r.get_root()
+        r = FindRoot(coord)  # Решение задачи комивояжера
+        self.new_route = r.get_root()
 
-            obj = CalcRoot(self.ka, coord, new_root)
-            obj.view_points()
-            obj.drawing_root()
+        obj = CalcRoot(self.ka, coord, self.new_route)
+        obj.view_points()
+        obj.drawing_root()
+
+    def get_route(self):
+        return self.new_route
 
 
 class CalcRoot:
@@ -78,9 +80,6 @@ class CalcRoot:
         for point in self.coord:
             self.drawing_point(point[0], point[1], 3, "blue")
 
-        # База дрона
-        self.drawing_point(const.BASE[0], const.BASE[1], 5, "darkred")
-
     def drawing_root(self):
         total = 0
 
@@ -96,9 +95,7 @@ class CalcRoot:
                 y2 = self.root[i + 1][1]
 
             self.drawing_line(x1, y1, x2, y2, "blue")
-
             total += Drone.distance((x1, y1, x2, y2))
-
         print("Total distance: {:7.2f}".format(total))
 
 
@@ -112,12 +109,12 @@ class KeyAdapter:
 
     # Выход из программы - правая кнопка мыши
     @staticmethod
-    def exit_app():
+    def exit_app(self):
         sys.exit()
 
 
-def main(ll: list):
-    base, ul, br = (ll[0], ll[1]), (ll[2], ll[3]), (ll[4], ll[5])
+def main(args_list: list):
+    base, ul, br = (args_list[0], args_list[1]), (args_list[2], args_list[3]), (args_list[4], args_list[5])
     print("BASE={}, UL={}, BR={}".format(base, ul, br))
     root = Tk()
     root.title("Area Shooting")
@@ -130,20 +127,21 @@ def main(ll: list):
     da = DefineArea(ka, base, ul, br)  # Определить область съемки
 
     root.mainloop()
+    return da.get_route()
 
 
 if __name__ == '__main__':
-
     if len(sys.argv) == 7:
         try:
             ll = list(map(int, sys.argv[1:]))
-            if all(item >= 0 for item in ll) and (ll[2] < ll[4]) and (ll[3] < ll[5]):
-                main(ll)
-            else:
-                print("Problem: check if >= 0 and UpperLeft < BottomRight", ll)
         except:
-            print('Problem: incorrect integers', sys.argv[1:])
+            print('Incorrect integers', sys.argv[1:])
             sys.exit(1)
     else:
-        print("Problem: number of input parameters must be 6: Base(x,y), UL(x,y), BR(x,y)", sys.argv[1:])
+        print("Number of input parameters must be 6: Base(x,y), UL(x,y), BR(x,y)", sys.argv[1:])
         sys.exit(1)
+
+    if all(item >= 0 for item in ll) and (ll[2] < ll[4]) and (ll[3] < ll[5]):
+        main(ll)
+    else:
+        print("Check if >= 0 and UpperLeft < BottomRight", ll)
