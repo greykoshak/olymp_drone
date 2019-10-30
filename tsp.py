@@ -266,7 +266,8 @@ class FindRoot:
             root = sort_root(root)
             final = igs.get_root_estimation(root)
 
-        self.out = [(self.coord[i[0]][0], self.coord[i[0]][1]) for i in root]
+        self.out = [(self.coord[item[0]][0], self.coord[item[0]][1]) for item in root]
+        self.out.append(self.out[0])
 
     def get_root(self):
         self.computing()
