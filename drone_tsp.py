@@ -37,16 +37,15 @@ def main(args_list: list):
     print("BASE={}, UL={}, BR={}".format(base, ul, br))
 
     da = DefineArea(base, ul, br)  # Определить область съемки
-
     return da.get_route()  # tsp route
 
 
 if __name__ == '__main__':
     if len(sys.argv) == 7:
         try:
-            ll = list(map(int, sys.argv[1:]))
+            ll = list(map(float, sys.argv[1:]))
         except:
-            print('Incorrect integers', sys.argv[1:])
+            print('Incorrect numbers', sys.argv[1:])
             sys.exit(1)
     else:
         print("Number of input parameters must be 6: Base(x,y), UL(x,y), BR(x,y)", sys.argv[1:])

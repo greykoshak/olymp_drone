@@ -27,8 +27,8 @@ class DefCoord:
             num_y = len_y // SIDE + 1
 
         # main, fill
-        for i in range(num_x):
-            for j in range(num_y):
+        for i in range(int(num_x)):
+            for j in range(int(num_y)):
                 self.points.append((min(self.xp1, self.xp2) + SIDE / 2 + SIDE * i,
                                     min(self.yp1, self.yp2) + SIDE / 2 + SIDE * j))
 
