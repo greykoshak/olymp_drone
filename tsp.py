@@ -201,7 +201,7 @@ class FindRoot:
                 est_plans.append(d_min)
 
                 if d_min == igs.f0:
-                    root.append(igs.f0_root)
+                    root = igs.f0_root
                     break
                 first_pass = False
             else:
@@ -254,16 +254,17 @@ class FindRoot:
                     numbers = list(filter(lambda x: x != 0 and x != float('inf'), bool_mat))
                     build_root = True if numbers else False
 
-        find = np.where(mat == 0)  # Найти все нулевые элементы
-        v_null = zip(find[0], find[1])  # Вектор, содержащий координаты нулевых элементов
+        if d_min < igs.f0:
+            find = np.where(mat == 0)  # Найти все нулевые элементы
+            v_null = zip(find[0], find[1])  # Вектор, содержащий координаты нулевых элементов
 
-        ind = sm.get_index()
+            ind = sm.get_index()
 
-        for point in v_null:
-            root.append((ind[0][point[0]], ind[1][point[1]]))
+            for point in v_null:
+                root.append((ind[0][point[0]], ind[1][point[1]]))
 
-        root = sort_root(root)
-        final = igs.get_root_estimation(root)
+            root = sort_root(root)
+            final = igs.get_root_estimation(root)
 
         self.out = [(self.coord[i[0]][0], self.coord[i[0]][1]) for i in root]
 
