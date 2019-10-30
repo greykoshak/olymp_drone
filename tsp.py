@@ -190,7 +190,7 @@ class FindRoot:
         root = list()  # Маршрут комивояжера
 
         igs = GraphScore(mat)
-        print(igs.f0_root, igs.f0)
+        # print(igs.f0_root, igs.f0)
         first_pass = True
         build_root = True  # Условие работы цикла: пока есть ненулевые элементы
 
@@ -264,7 +264,6 @@ class FindRoot:
 
         root = sort_root(root)
         final = igs.get_root_estimation(root)
-        print(root, final)
 
         self.out = [(self.coord[i[0]][0], self.coord[i[0]][1]) for i in root]
 
