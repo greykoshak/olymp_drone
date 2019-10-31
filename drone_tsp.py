@@ -35,10 +35,10 @@ class DefineArea:
 def main(args_list: list):
 
     base, side = (args_list[0], args_list[1]), args_list[6]
-    points = [(args_list[2], args_list[3]), (args_list[4], args_list[5])]
-    points = sorted(points, key=lambda x: x[0])
-    ul = points[0]
-    br = points[1]
+    rect = [args_list[2], args_list[3], args_list[4], args_list[5]]
+
+    ul = (min(rect[0], rect[2]), max(rect[1], rect[3]))
+    br = (max(rect[0], rect[2]), min(rect[1], rect[3]))
 
     print("BASE={}, UL={}, BR={}, Side={}".format(base, ul, br, side))
 

@@ -10,8 +10,8 @@ class DefCoord:
         self.side = side
 
         # main, assign/calculate
-        len_x = self.xp2 - self.xp1
-        len_y = self.yp2 - self.yp1
+        len_x = abs(self.xp2 - self.xp1)
+        len_y = abs(self.yp2 - self.yp1)
 
         if len_x % self.side == 0:
             num_x = len_x // self.side
